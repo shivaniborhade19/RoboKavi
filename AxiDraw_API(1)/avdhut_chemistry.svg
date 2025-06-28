@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
+  <defs>
+    <style type="text/css">
+      @font-face {{
+        font-family: 'Kalam';
+        src: url('AxiDraw_API(1)/Kalam-Regular.ttf');
+      }}
+    </style>
+  </defs>
+  <g>
+    <text x="50" y="100" font-size="32" font-family="Kalam">
+      <tspan x="50" y="100">अवधूत रसायन शास्त्रात, बुडाला,</tspan>
+      <tspan x="50" y="150">प्रयोग करून तो ज्ञान पावला.</tspan>
+      <tspan x="50" y="200">सूत्रे, अभिक्रिया, त्याला माहीत,</tspan>
+      <tspan x="50" y="250">विज्ञानाच्या क्षेत्रात, तो झाला प्रसिद्धीत.</tspan>
+    </text>
+  </g>
+</svg>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Robokavi</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f7f7f7;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+    .language-switch {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.3s;
+      border-radius: 24px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: #2196F3;
+    }
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+    .input-fields {
+      margin-top: 20px;
+    }
+    input[type="text"], button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      margin-top: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    #output, #plot-status-section { /* Changed ID for clarity */
+      margin-top: 20px;
+      padding: 15px;
+      background: #f1f1f1;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    .center {
+      text-align: center;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1 id="title">🖋️ Robokavi</h1>
+      <div class="language-switch">
+        <label id="lang-label" for="lang-toggle">Eng/Mar</label>
+        <label class="switch">
+          <input type="checkbox" id="lang-toggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div style="margin-top: 15px;">
+      <label for="voice"><input type="radio" name="input-method" value="voice" id="voice" checked> 🎤 Use Voice</label>
+      <label for="text" style="margin-left: 20px;"><input type="radio" name="input-method" value="text" id="text"> ⌨️ Type Yourself</label>
+    </div>
+
+    <div class="input-fields">
+      <input type="text" id="name" placeholder="Enter your name">
+      <input type="text" id="subject" placeholder="Enter a subject">
+      <button id="generate-button">Generate Poem</button>
+    </div>
+
+    <div id="output" class="hidden"></div>
+    <div id="plot-status-section" class="hidden center"> <h3>Plotter Status:</h3>
+      <div id="plot-output-content"></div> </div>
+  </div>
+
+  <script>
+    const nameInput = document.getElementById("name");
+    const subjectInput = document.getElementById("subject");
+    const generateButton = document.getElementById("generate-button");
+    const langToggle = document.getElementById("lang-toggle");
+    const outputDiv = document.getElementById("output");
+    const plotStatusSection = document.getElementById("plot-status-section"); // Renamed
+    const plotOutputContent = document.getElementById("plot-output-content"); // New
+    const titleHeading = document.getElementById("title");
+    const langLabel = document.getElementById("lang-label");
+
+    let currentLang = "en";
+    // Removed currentSVGFilename as it's no longer needed for a second fetch
+
+    const uiTexts = {
+      en: {
+        title: "🖋️ Robokavi - Marathi Poem Plotter",
+        namePlaceholder: "Enter your name",
+        subjectPlaceholder: "Enter a subject",
+        generate: "Generate Poem",
+        namePrompt: "Please tell your name",
+        subjectPrompt: "Now say your favorite subject",
+        inputWarning: "❗ Please enter both name and subject.",
+        generating: "⌛ Generating poem and sending to plotter...", // Updated message
+        poemTitle: "Generated Poem",
+        useVoice: "🎤 Use Voice",
+        typeYourself: "⌨️ Type Yourself",
+        plotStatusTitle: "Plotter Status:" // New
+      },
+      mr: {
+        title: "🖋️ रोबोकवी - मराठी कविता प्लॉटर",
+        namePlaceholder: "तुमचं नाव",
+        subjectPlaceholder: "विषय लिखा",
+        generate: "कविता तयार करा",
+        namePrompt: "कृपया तुमचं नाव सांगा",
+        subjectPrompt: "आता तुमचा आवडता विषय सांगा",
+        inputWarning: "❗ कृपया नाव आणि विषय दोनी भरा.",
+        generating: "⌛ कविता त्यार होत आहे आणि प्लॉटरला पाठवत आहे...", // Updated message
+        poemTitle: "मराठी कविता",
+        useVoice: "🎤 आवाज वापरा",
+        typeYourself: "⌨️ स्वतः लिखा",
+        plotStatusTitle: "प्लॉटरची स्थिती:" // New
+      }
+    };
+
+    function speak(text, lang = "en-IN") {
+      return new Promise((resolve) => {
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = lang;
+        utter.onend = resolve;
+        speechSynthesis.speak(utter);
+      });
+    }
+
+    function listen(lang = "en-IN") {
+      return new Promise((resolve, reject) => {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+          alert("❌ Voice input not supported in this browser. Use Google Chrome.");
+          reject("SpeechRecognition not supported.");
+          return;
+        }
+
+        const recognition = new SpeechRecognition();
+        recognition.lang = lang;
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        recognition.start();
+
+        recognition.onresult = (event) => {
+          const transcript = event.results[0][0].transcript;
+          resolve(transcript);
+        };
+
+        recognition.onerror = (event) => {
+          alert("🎤 Voice input error: " + event.error);
+          reject(event.error);
+        };
+
+        recognition.onspeechend = () => recognition.stop();
+      });
+    }
+
+    async function startVoiceFlow() {
+      const t = uiTexts[currentLang];
+      const voiceLang = currentLang === "mr" ? "mr-IN" : "en-US";
+
+      try {
+        await speak(t.namePrompt, voiceLang);
+        const nameTranscript = await listen(voiceLang);
+        nameInput.value = nameTranscript.trim();
+
+        await speak(t.subjectPrompt, voiceLang);
+        const subjectTranscript = await listen(voiceLang);
+        subjectInput.value = subjectTranscript.trim();
+
+        generateButton.click(); // Trigger the generate button click
+      } catch (err) {
+        console.error("Voice flow error:", err);
+        alert("🎤 Voice flow error: " + err);
+      }
+    }
+
+    function setupVoiceHandler() {
+      const voiceRadio = document.querySelector("#voice");
+      if (voiceRadio) {
+        voiceRadio.addEventListener("change", () => {
+          if (voiceRadio.checked) {
+            startVoiceFlow();
+          }
+        });
+      }
+    }
+
+    function updateLanguageUI(language) {
+      currentLang = language;
+      const t = uiTexts[language];
+      titleHeading.textContent = t.title;
+      nameInput.placeholder = t.namePlaceholder;
+      subjectInput.placeholder = t.subjectPlaceholder;
+      generateButton.textContent = t.generate;
+      langLabel.textContent = language === "mr" ? "इंग्रजी/मराठी" : "Eng/Mar";
+      document.querySelector('label[for="voice"]').innerHTML = `<input type="radio" name="input-method" value="voice" id="voice"> ${t.useVoice}`;
+      document.querySelector('label[for="text"]').innerHTML = `<input type="radio" name="input-method" value="text" id="text"> ${t.typeYourself}`;
+      document.querySelector('#plot-status-section h3').textContent = t.plotStatusTitle; // Update plotter status title
+      setupVoiceHandler(); // Re-attach handler for dynamically created radio buttons
+    }
+
+    langToggle.addEventListener("change", () => {
+      const lang = langToggle.checked ? "mr" : "en";
+      updateLanguageUI(lang);
+    });
+
+    generateButton.addEventListener("click", async () => {
+      const lang = currentLang;
+      const t = uiTexts[lang];
+      const name = nameInput.value.trim();
+      const subject = subjectInput.value.trim();
+
+      if (!name || !subject) {
+        outputDiv.classList.remove("hidden");
+        outputDiv.innerHTML = `<p style="color:red;">${t.inputWarning}</p>`;
+        // Hide plot status section if input is incomplete
+        plotStatusSection.classList.add("hidden");
+        return;
+      }
+
+      outputDiv.classList.remove("hidden");
+      outputDiv.innerHTML = `<p>${t.generating}</p>`;
+      plotStatusSection.classList.add("hidden"); // Hide previous plotter status
+      generateButton.disabled = true;
+
+      try {
+        const response = await fetch("/generate-poem", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, subject, language: lang })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          outputDiv.innerHTML = `<h3>✅ ${t.poemTitle}:</h3><pre>${result.poem}</pre>`;
+
+          // Display plotter status directly from the /generate-poem response
+          plotStatusSection.classList.remove("hidden");
+          if (result.message) {
+            plotOutputContent.innerHTML = `<p style="color:green;">${result.message}</p>`;
+          } else {
+            plotOutputContent.innerHTML = `<p style="color:green;">Plotting command sent successfully.</p>`;
+          }
+
+          if (result.plotter_output_stdout) {
+            plotOutputContent.innerHTML += `<h4>AxiDraw Output:</h4><pre>${result.plotter_output_stdout}</pre>`;
+          }
+          if (result.plotter_output_stderr) {
+            plotOutputContent.innerHTML += `<h4 style="color:orange;">AxiDraw Warnings/Errors:</h4><pre style="color:orange;">${result.plotter_output_stderr}</pre>`;
+          }
+
+        } else {
+          // Error from the /generate-poem endpoint (Gemini or plotting error)
+          outputDiv.innerHTML = `<p style="color:red;">❌ ${result.error}</p>`;
+          plotStatusSection.classList.remove("hidden");
+          plotOutputContent.innerHTML = `<p style="color:red;">❌ Plotting failed during generation. See error above.</p>`;
+          if (result.plotter_stdout) {
+            plotOutputContent.innerHTML += `<h4>AxiDraw STDOUT:</h4><pre>${result.plotter_stdout}</pre>`;
+          }
+          if (result.plotter_stderr) {
+            plotOutputContent.innerHTML += `<h4>AxiDraw STDERR:</h4><pre>${result.plotter_stderr}</pre>`;
+          }
+        }
+      } catch (err) {
+        outputDiv.innerHTML = `<p style="color:red;">❌ Network or unexpected client-side error: ${err.message}</p>`;
+        plotStatusSection.classList.add("hidden"); // Hide plotter status if network error
+      } finally {
+        generateButton.disabled = false;
+      }
+    });
+
+    window.addEventListener("DOMContentLoaded", () => {
+      updateLanguageUI("en"); // Initialize UI with English
+      setupVoiceHandler();
+      // If voice radio is checked by default, start voice flow on load
+      const voiceRadio = document.querySelector("#voice");
+      if (voiceRadio && voiceRadio.checked) {
+        startVoiceFlow();
+      }
+    });
+  </script>
+</body>
+</html>

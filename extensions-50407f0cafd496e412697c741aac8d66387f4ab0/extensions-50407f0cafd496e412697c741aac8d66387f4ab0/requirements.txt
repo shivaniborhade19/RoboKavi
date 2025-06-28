@@ -1,0 +1,22 @@
+# Required Inkex modules
+lxml==4.7.1
+cssselect==1.1.0
+typing==3.7.4.3
+numpy # versions differ between pythons
+
+# Optional extra Inkex modules
+pySerial==3.5
+PyGObject==3.42.0;platform_system!="Windows"
+# SYSTEM: libcairo2-dev libgirepository1.0-dev gir1.2-gtk-3.0
+-r other/inkman/requirements.txt
+
+# Specific extensions requirements
+scour==0.38.2
+
+# Developer and CI requirements
+pytest==7.0.1
+pytest-cov==3.0.0
+pytest-xvfb==2.0.0
+# SYSTEM: Must have xvfb program installed
+coverage==6.3.1
+tox==3.24.5
