@@ -4,21 +4,51 @@ import os
 import subprocess
 import sys
 
-SVG_OUTPUT_BASE_DIR = (
-    r"C:\Users\hp\Downloads\robokavi_gemini_web\AxiDraw_API(1)")
-AXICLI_SUBDIRECTORY = "AxiDraw_API_396"
-AXICLI_SCRIPT_FULL_PATH = os.path.join(SVG_OUTPUT_BASE_DIR,
-                                       AXICLI_SUBDIRECTORY, "axicli.py")
+# ✅ AxiDraw paths
+AXICLI_DIR = (
+ r"C:\Users\hp\Downloads\robokavi_gemini_web\AxiDraw_API(1)\AxiDraw_API_396")
+AXICLI_SCRIPT = os.path.join(AXICLI_DIR, "axicli.py")
+SVG_OUTPUT_DIR = r"C:\Users\hp\Downloads\robokavi_gemini_web\AxiDraw_API(1)"
 
 
-def run_plotter(svg_vector_path):
-    if not os.path.exists(svg_vector_path):
-        raise FileNotFoundError("SVG file does not exist.")
+# ✅ FUNCTION DEFINITION
+def run_plotter(svg_vector_filename):
+    """
+    Runs the AxiDraw plotter using axicli.py and the provided SVG file.
+    """
+    full_svg_path = os.path.join(SVG_OUTPUT_DIR, svg_vector_filename)
 
-    filename_only = os.path.basename(svg_vector_path)
+    if not os.path.exists(full_svg_path):
+        raise FileNotFoundError(f"""{svg_vector_filename} not found in
+                                {SVG_OUTPUT_DIR}""")
 
-    command = [sys.executable, AXICLI_SCRIPT_FULL_PATH, filename_only]
-    result = subprocess.run(command, capture_output=True, text=True,
-                            cwd=SVG_OUTPUT_BASE_DIR)
+    cmd = [sys.executable, AXICLI_SCRIPT, svg_vector_filename]
+
+    print(f"🔧 Running AxiDraw command: {' '.join(cmd)}")
+    print(f"📂 Working directory: {SVG_OUTPUT_DIR}")
+
+    result = subprocess.run(
+        cmd,
+        cwd=SVG_OUTPUT_DIR,
+        capture_output=True,
+        text=True,
+        check=True
+    )
 
     return result.stdout, result.stderr
+
+
+# ✅ MANUAL TESTING BLOCK
+if __name__ == "__main__":
+    try:
+        # 🔁 Replace with your actual generated vector filename
+        test_filename = "shiva_history_vector.svg"
+        stdout, stderr = run_plotter(test_filename)
+
+        print("✅ AxiDraw executed successfully.")
+        print("📤 STDOUT:\n", stdout)
+        if stderr:
+            print("⚠️ STDERR:\n", stderr)
+
+    except Exception as e:
+        print("❌ Error during plotter run:", e)
