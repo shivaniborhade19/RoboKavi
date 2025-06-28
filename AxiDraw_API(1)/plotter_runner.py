@@ -4,7 +4,8 @@ import os
 import subprocess
 import sys
 
-SVG_OUTPUT_BASE_DIR = r"C:\Users\hp\Downloads\robokavi_gemini_web\AxiDraw_API(1)"
+SVG_OUTPUT_BASE_DIR = (
+    r"C:\Users\hp\Downloads\robokavi_gemini_web\AxiDraw_API(1)")
 AXICLI_SUBDIRECTORY = "AxiDraw_API_396"
 AXICLI_SCRIPT_FULL_PATH = os.path.join(SVG_OUTPUT_BASE_DIR,
                                        AXICLI_SUBDIRECTORY, "axicli.py")
