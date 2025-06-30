@@ -4,15 +4,17 @@ import os
 import subprocess
 
 SVG_OUTPUT_BASE_DIR = (
-    r"C:\Users\hp\Downloads\robokavi_gemini_web\AxiDraw_API(1)")
+  r"C:\Users\hp\Downloads\robokavi_gemini_web\AxiDraw_API(1)\AxiDraw_API_396")
 
 
-def save_poem_to_svg(poem_text, filename_base):
-    os.makedirs(SVG_OUTPUT_BASE_DIR, exist_ok=True)
+def save_poem_as_svg(poem_text, filename_base, save_dir=None):
+    if save_dir is None:
+        save_dir = SVG_OUTPUT_BASE_DIR
 
-    svg_path = os.path.join(SVG_OUTPUT_BASE_DIR, f"{filename_base}.svg")
-    svg_vector_path = os.path.join(SVG_OUTPUT_BASE_DIR,
-                                   f"{filename_base}_vector.svg")
+    os.makedirs(save_dir, exist_ok=True)
+
+    svg_path = os.path.join(save_dir, f"{filename_base}.svg")
+    svg_vector_path = os.path.join(save_dir, f"{filename_base}_vector.svg")
 
     svg_content = '''<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
@@ -49,5 +51,5 @@ def save_poem_to_svg(poem_text, filename_base):
     except subprocess.CalledProcessError as e:
         print("❌ Vectorization failed:", e)
         return None
-
+    print("✅ Vector SVG saved successfully:", svg_vector_path)
     return svg_vector_path
