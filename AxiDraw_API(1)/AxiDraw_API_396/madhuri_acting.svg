@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
+  <defs>
+    <style type="text/css">
+      @font-face {{
+        font-family: 'Kalam';
+        src: url('AxiDraw_API(1)/Kalam-Regular.ttf');
+      }}
+    </style>
+  </defs>
+  <g>
+    <text x="50" y="100" font-size="32" font-family="Kalam">
+      <tspan x="50" y="100">माधुरीची अभिनयाची जोत,</tspan>
+      <tspan x="50" y="150">पडद्यावर सौंदर्य फुलते मोठे खोटे.</tspan>
+      <tspan x="50" y="200">भावनांचा सागर तरंगत,</tspan>
+      <tspan x="50" y="250">दर्शनाने मन मोहित करते ते.</tspan>
+    </text>
+  </g>
+</svg>

@@ -1,10 +1,9 @@
-# svg_converter.py
-
 import os
 import subprocess
 
 SVG_OUTPUT_BASE_DIR = (
-  r"C:\Users\hp\Downloads\robokavi_gemini_web\AxiDraw_API(1)\AxiDraw_API_396")
+    r"C:\Users\hp\Downloads\robokavi_gemini_web\AxiDraw_API(1)\AxiDraw_API_396"
+)
 
 
 def save_poem_as_svg(poem_text, filename_base, save_dir=None):
@@ -16,6 +15,7 @@ def save_poem_as_svg(poem_text, filename_base, save_dir=None):
     svg_path = os.path.join(save_dir, f"{filename_base}.svg")
     svg_vector_path = os.path.join(save_dir, f"{filename_base}_vector.svg")
 
+    # SVG Content
     svg_content = '''<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
   <defs>
@@ -40,16 +40,29 @@ def save_poem_as_svg(poem_text, filename_base, save_dir=None):
 
     with open(svg_path, 'w', encoding='utf-8') as f:
         f.write(svg_content)
+    print("📄 SVG file saved:", svg_path)
 
+    # Inkscape vectorization
     try:
-        subprocess.run([
-            "C:/Program Files/Inkscape/bin/inkscape.exe",
+        result = subprocess.run([
+            "C:/Program Files/Inkscape/bin/inkscape.com",
             svg_path,
-            "--actions=select-all;object-to-path;export-do;quit",
+            '--actions=select-all;object-to-path;export-do;quit',
             f"--export-filename={svg_vector_path}"
-        ], check=True)
+        ], check=True, timeout=15, capture_output=True, text=True)
+
+        print("✅ Vector SVG saved successfully:", svg_vector_path)
+        print("📤 Inkscape STDOUT:", result.stdout)
+        print("⚠ Inkscape STDERR:", result.stderr)
+
+    except subprocess.TimeoutExpired:
+        print("⏰ Inkscape command timed out!")
+        return None
+
     except subprocess.CalledProcessError as e:
         print("❌ Vectorization failed:", e)
+        print("📤 STDOUT:", e.stdout)
+        print("⚠ STDERR:", e.stderr)
         return None
-    print("✅ Vector SVG saved successfully:", svg_vector_path)
+
     return svg_vector_path
