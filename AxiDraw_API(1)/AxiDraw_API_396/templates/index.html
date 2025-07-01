@@ -1,4 +1,3 @@
-<!-- Save this as templates/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,18 +38,11 @@
       width: 50px;
       height: 24px;
     }
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
+    .switch input { opacity: 0; width: 0; height: 0; }
     .slider {
       position: absolute;
       cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      top: 0; left: 0; right: 0; bottom: 0;
       background-color: #ccc;
       transition: 0.3s;
       border-radius: 24px;
@@ -90,12 +82,8 @@
       border-radius: 6px;
       border: 1px solid #ccc;
     }
-    .center {
-      text-align: center;
-    }
-    .hidden {
-      display: none;
-    }
+    .center { text-align: center; }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
@@ -125,13 +113,8 @@
     <div id="output" class="hidden"></div>
 
     <div id="plot-status-section" class="hidden center">
-      <h3>Plotter Status:</h3>
+      <h3 id="plot-status-title">Plotter Status:</h3>
       <div id="plot-output-content"></div>
-    </div>
-
-    <div id="plot-button-container" class="center hidden">
-      <button id="plot-button">✍️ Start Plotting</button>
-      <div id="plot-button-status" style="margin-top: 10px;"></div>
     </div>
   </div>
 
@@ -145,10 +128,7 @@
     const plotOutputContent = document.getElementById("plot-output-content");
     const titleHeading = document.getElementById("title");
     const langLabel = document.getElementById("lang-label");
-
-    const plotButtonContainer = document.getElementById("plot-button-container");
-    const plotButton = document.getElementById("plot-button");
-    const plotButtonStatus = document.getElementById("plot-button-status");
+    const plotStatusTitle = document.getElementById("plot-status-title");
 
     let currentLang = "en";
 
@@ -158,13 +138,9 @@
         namePlaceholder: "Enter your name",
         subjectPlaceholder: "Enter a subject",
         generate: "Generate Poem",
-        namePrompt: "Please tell your name",
-        subjectPrompt: "Now say your favorite subject",
         inputWarning: "❗ Please enter both name and subject.",
-        generating: "⌛ Generating poem and sending to plotter...",
+        generating: "⌛ Generating poem and saving SVG...",
         poemTitle: "Generated Poem",
-        useVoice: "🎤 Use Voice",
-        typeYourself: "⌨️ Type Yourself",
         plotStatusTitle: "Plotter Status:"
       },
       mr: {
@@ -172,86 +148,12 @@
         namePlaceholder: "तुमचं नाव",
         subjectPlaceholder: "विषय लिखा",
         generate: "कविता तयार करा",
-        namePrompt: "कृपया तुमचं नाव सांगा",
-        subjectPrompt: "आता तुमचा आवडता विषय सांगा",
         inputWarning: "❗ कृपया नाव आणि विषय दोनी भरा.",
-        generating: "⌛ कविता त्यार होत आहे आणि प्लॉटरला पाठवत आहे...",
+        generating: "⌛ कविता तयार होत आहे आणि SVG सेव्ह करत आहे...",
         poemTitle: "मराठी कविता",
-        useVoice: "🎤 आवाज वापरा",
-        typeYourself: "⌨️ स्वतः लिखा",
         plotStatusTitle: "प्लॉटरची स्थिती:"
       }
     };
-
-    function speak(text, lang = "en-IN") {
-      return new Promise((resolve) => {
-        const utter = new SpeechSynthesisUtterance(text);
-        utter.lang = lang;
-        utter.onend = resolve;
-        speechSynthesis.speak(utter);
-      });
-    }
-
-    function listen(lang = "en-IN") {
-      return new Promise((resolve, reject) => {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SpeechRecognition) {
-          alert("❌ Voice input not supported in this browser. Use Google Chrome.");
-          reject("SpeechRecognition not supported.");
-          return;
-        }
-
-        const recognition = new SpeechRecognition();
-        recognition.lang = lang;
-        recognition.interimResults = false;
-        recognition.maxAlternatives = 1;
-
-        recognition.start();
-
-        recognition.onresult = (event) => {
-          const transcript = event.results[0][0].transcript;
-          resolve(transcript);
-        };
-
-        recognition.onerror = (event) => {
-          alert("🎤 Voice input error: " + event.error);
-          reject(event.error);
-        };
-
-        recognition.onspeechend = () => recognition.stop();
-      });
-    }
-
-    async function startVoiceFlow() {
-      const t = uiTexts[currentLang];
-      const voiceLang = currentLang === "mr" ? "mr-IN" : "en-US";
-
-      try {
-        await speak(t.namePrompt, voiceLang);
-        const nameTranscript = await listen(voiceLang);
-        nameInput.value = nameTranscript.trim();
-
-        await speak(t.subjectPrompt, voiceLang);
-        const subjectTranscript = await listen(voiceLang);
-        subjectInput.value = subjectTranscript.trim();
-
-        generateButton.click();
-      } catch (err) {
-        console.error("Voice flow error:", err);
-        alert("🎤 Voice flow error: " + err);
-      }
-    }
-
-    function setupVoiceHandler() {
-      const voiceRadio = document.querySelector("#voice");
-      if (voiceRadio) {
-        voiceRadio.addEventListener("change", () => {
-          if (voiceRadio.checked) {
-            startVoiceFlow();
-          }
-        });
-      }
-    }
 
     function updateLanguageUI(language) {
       currentLang = language;
@@ -261,10 +163,7 @@
       subjectInput.placeholder = t.subjectPlaceholder;
       generateButton.textContent = t.generate;
       langLabel.textContent = language === "mr" ? "इंग्रजी/मराठी" : "Eng/Mar";
-      document.querySelector('label[for="voice"]').innerHTML = `<input type="radio" name="input-method" value="voice" id="voice"> ${t.useVoice}`;
-      document.querySelector('label[for="text"]').innerHTML = `<input type="radio" name="input-method" value="text" id="text"> ${t.typeYourself}`;
-      document.querySelector('#plot-status-section h3').textContent = t.plotStatusTitle;
-      setupVoiceHandler();
+      plotStatusTitle.textContent = t.plotStatusTitle;
     }
 
     langToggle.addEventListener("change", () => {
@@ -282,14 +181,12 @@
         outputDiv.classList.remove("hidden");
         outputDiv.innerHTML = `<p style="color:red;">${t.inputWarning}</p>`;
         plotStatusSection.classList.add("hidden");
-        plotButtonContainer.classList.add("hidden");
         return;
       }
 
       outputDiv.classList.remove("hidden");
       outputDiv.innerHTML = `<p>${t.generating}</p>`;
       plotStatusSection.classList.add("hidden");
-      plotButtonContainer.classList.add("hidden");
       generateButton.disabled = true;
 
       try {
@@ -303,45 +200,31 @@
 
         if (response.ok) {
           outputDiv.innerHTML = `<h3>✅ ${t.poemTitle}:</h3><pre>${result.poem}</pre>`;
-          plotStatusSection.classList.remove("hidden");
-          plotOutputContent.innerHTML = `<p style="color:green;">${result.message || "✅ Poem generated and SVG created."}</p>`;
-          plotButtonContainer.classList.remove("hidden"); // ✅ Always show the button
+
+          if (result.plotter_output_stdout || result.plotter_output_stderr) {
+            let plotHTML = `<p style="color:green;">✅ Plotting started!</p>`;
+            plotHTML += `<h4>🖨️ AxiDraw Output:</h4><pre>${result.plotter_output_stdout}</pre>`;
+            if (result.plotter_output_stderr) {
+              plotHTML += `<h4 style="color:orange;">Warnings/Errors:</h4><pre>${result.plotter_output_stderr}</pre>`;
+            }
+
+            plotOutputContent.innerHTML = plotHTML;
+            plotStatusSection.classList.remove("hidden");
+          }
+
         } else {
           outputDiv.innerHTML = `<p style="color:red;">❌ ${result.error}</p>`;
-          plotStatusSection.classList.remove("hidden");
-          plotOutputContent.innerHTML = `<p style="color:red;">❌ Plotting failed during generation.</p>`;
-          plotButtonContainer.classList.add("hidden");
         }
+
       } catch (err) {
-        outputDiv.innerHTML = `<p style="color:red;">❌ Network error: ${err.message}</p>`;
-        plotStatusSection.classList.add("hidden");
-        plotButtonContainer.classList.add("hidden");
+        outputDiv.innerHTML = `<p style="color:red;">❌ Error: ${err.message}</p>`;
       } finally {
         generateButton.disabled = false;
       }
     });
 
-    plotButton.addEventListener("click", async () => {
-      plotButton.disabled = true;
-      plotButtonStatus.innerText = "✍️ Plotting started...";
-      try {
-        const response = await fetch("/test-plot");
-        const result = await response.json();
-        plotButtonStatus.innerHTML = `<span style="color:green;">✅ Plotting finished</span><br/><pre>${result.stdout}</pre>`;
-      } catch (err) {
-        plotButtonStatus.innerHTML = `<span style="color:red;">❌ Plotting failed: ${err.message}</span>`;
-      } finally {
-        plotButton.disabled = false;
-      }
-    });
-
     window.addEventListener("DOMContentLoaded", () => {
       updateLanguageUI("en");
-      setupVoiceHandler();
-      const voiceRadio = document.querySelector("#voice");
-      if (voiceRadio && voiceRadio.checked) {
-        startVoiceFlow();
-      }
     });
   </script>
 </body>
