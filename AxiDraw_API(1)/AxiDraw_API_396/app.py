@@ -6,6 +6,9 @@ from plotter_runner import run_plotter
 import threading
 import time
 import traceback
+import os
+import subprocess
+import sys
 app = Flask(__name__, template_folder='templates')
 CORS(app)
 
@@ -42,20 +45,40 @@ def generate():
     def background_plot():
         try:
             print("🧵 Starting plotter in background thread...")
+
+            # ✅ Full absolute folder path
+            folder_path = os.path.dirname(os.path.abspath(__file__))
+            template_svg = os.path.join(folder_path, "template3.svg")
+
+            if os.path.exists(template_svg):
+                print("🖨️ Plotting template3.svg...")
+
+                result = subprocess.run([
+                    sys.executable, "axicli.py", "template3.svg"
+                ], cwd=folder_path)
+
+                print("✅ Template plotted. Result code:", result.returncode)
+            else:
+                print("⚠️ template3.svg not found at:", template_svg)
+
+            # 2️⃣ Then plot the newly generated vector SVG
+            from plotter_runner import run_plotter
             stdout, stderr = run_plotter()
             print("🖨️ Plotter finished:\nSTDOUT:\n", stdout)
             if stderr:
                 print("⚠️ STDERR:", stderr)
+
         except Exception as e:
             print("❌ Background plot error:", e)
             traceback.print_exc()
 
     threading.Thread(target=background_plot).start()
     print("✅ Background thread launched")
+
     return jsonify({
-            "poem": poem,
-            "message": "✅ Poem generated Plotter command started.",
-        }), 200
+        "poem": poem,
+        "message": "✅ Poem generated. Plotting started with template first.",
+    }), 200
 
 
 @app.route('/test-plot')

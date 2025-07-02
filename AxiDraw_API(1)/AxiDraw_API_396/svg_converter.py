@@ -14,27 +14,60 @@ def save_poem_as_svg(poem_text, filename_base, save_dir=None):
 
     svg_path = os.path.join(save_dir, f"{filename_base}.svg")
     svg_vector_path = os.path.join(save_dir, f"{filename_base}_vector.svg")
+    # --- ADJUSTED STARTING COORDINATES ---
+    initial_x = 350      # Horizontal center-ish
+    initial_y = 500      # Start near bottom of canvas
+    font_size = 20       # Smaller font
+    line_spacing = 40    # Moderate spacing upwards
+    svg_width = 800
+    svg_height = 600
 
-    # SVG Content
-    svg_content = '''<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
-  <defs>
-    <style type="text/css">
-      @font-face {{
-        font-family: 'Kalam';
-        src: url('AxiDraw_API(1)/Kalam-Regular.ttf');
-      }}
-    </style>
-  </defs>
-  <g>
-    <text x="50" y="100" font-size="32" font-family="Kalam">
+    # SVG Content with the requested nested <tspan> structure and sodipodi
+    svg_content = f'''<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   width="{svg_width}"
+   height="{svg_height}"
+   viewBox="0 0 {svg_width} {svg_height}"
+   version="1.1"
+   id="svg1">
+  <defs id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,0)"> <text
+       xml:space="preserve"
+       text-anchor="middle"
+       style="font-size:{font_size}px;line-height:1.25;font-family:Kalam;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="{initial_x}"
+       y="{initial_y}"
+       id="text1">
+      <tspan sodipodi:role="line" id="tspan_outer" x="{initial_x}"
+      y="{initial_y}">
 '''
 
-    for i, line in enumerate(poem_text.splitlines()):
-        y = 100 + i * 50
-        svg_content += f'      <tspan x="50" y="{y}">{line}</tspan>\n'
+    # Generate inner tspans
+    lines = poem_text.splitlines()
+    num_lines = len(lines)
+    for i, line in enumerate(lines):
+        # Reverse direction: start lower and move up
+        y_current = initial_y - (num_lines - 1 - i) * line_spacing
+        svg_content += (f"""<tspan sodipodi:role="line" x="{initial_x}"
+                        y="{y_current}" id="tspan_{i+1}">{line}</tspan>\n""")
 
-    svg_content += '''    </text>
+    svg_content += '''      </tspan>
+    </text>
   </g>
 </svg>'''
 

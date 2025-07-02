@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   width="800"
+   height="600"
+   viewBox="0 0 800 600"
+   version="1.1"
+   id="svg1">
+  <defs id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,0)"> <text
+       xml:space="preserve"
+       style="font-size:20px;line-height:1.25;font-family:Kalam;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="350"
+       y="500"
+       id="text1">
+      <tspan sodipodi:role="line" id="tspan_outer" x="350"
+      y="500">
+<tspan sodipodi:role="line" x="350"
+                        y="380" id="tspan_1">अ‍ॅडिक झाला मी खेळाचा,</tspan>
+<tspan sodipodi:role="line" x="350"
+                        y="420" id="tspan_2">दिवस रात्र खेळतच जातो.</tspan>
+<tspan sodipodi:role="line" x="350"
+                        y="460" id="tspan_3">विरंगुळा नाही, व्यसन झाले,</tspan>
+<tspan sodipodi:role="line" x="350"
+                        y="500" id="tspan_4">जीवन हेच मी गमावतो.</tspan>
+      </tspan>
+    </text>
+  </g>
+</svg>
