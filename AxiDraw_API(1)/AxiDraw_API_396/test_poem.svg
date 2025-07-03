@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+     width="800" height="600"
+     viewBox="0 0 800 600"
+     version="1.1">
+  <g inkscape:label="Layer 1" inkscape:groupmode="layer" id="layer1">
+
+    <text
+       x="100"
+       y="100"
+       font-size="20"
+       style="font-family:Hershey Simplex;"
+       id="line1">कावेरी वाहते, सागर सारखी,</text>
+    <text
+       x="100"
+       y="140"
+       font-size="20"
+       style="font-family:Hershey Simplex;"
+       id="line2">निसर्गाची ती राणी, सुंदर स्वप्नं.</text>
+    <text
+       x="100"
+       y="180"
+       font-size="20"
+       style="font-family:Hershey Simplex;"
+       id="line3">हरीत तिचे जीवन</text>
+  </g>
+</svg>

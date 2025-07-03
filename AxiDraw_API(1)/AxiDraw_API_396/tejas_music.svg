@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="800"
+    height="600"
+    viewBox="0 0 800 600">
+  <g>
+    <text
+        x="400"
+        y="240"
+        text-anchor="middle"
+        font-family="Hershey Sans 1"
+        font-size="20px"
+        fill="#000000">तेजस धावे, संगीत वाजे,</text>
+    <text
+        x="400"
+        y="280"
+        text-anchor="middle"
+        font-family="Hershey Sans 1"
+        font-size="20px"
+        fill="#000000">मन मोहून जाई, आनंद पाजे.</text>
+    <text
+        x="400"
+        y="320"
+        text-anchor="middle"
+        font-family="Hershey Sans 1"
+        font-size="20px"
+        fill="#000000">लयबद्ध शब्द, सुर ध्वनी साजे,</text>
+    <text
+        x="400"
+        y="360"
+        text-anchor="middle"
+        font-family="Hershey Sans 1"
+        font-size="20px"
+        fill="#000000">आनंदाचा सागर, हृदयी भाजे.</text>
+  </g>
+</svg>

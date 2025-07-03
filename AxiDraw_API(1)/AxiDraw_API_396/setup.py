@@ -8,10 +8,10 @@ import pathlib
 import re
 import setuptools
 
-# install_requires is dynamically created (below) and therefore cannot easily be
+# install_requires is dynamically created (below) and therefore cannot easily
 # specified in pyproject.toml, so it is specified here.
 
-install_requires=[
+install_requires = [
         'ink_extensions>=1.3.2',
         'lxml>=4.9.3',
         'plotink>=1.8.0',
@@ -22,7 +22,7 @@ install_requires=[
 
 here = pathlib.Path.absolute(pathlib.Path(__file__).parent)
 depdir = here.joinpath("prebuilt_dependencies")
-if depdir.is_dir(): #installing on a non-privileged machine
+if depdir.is_dir():
     pkg_pattern = re.compile('(?P<pkg>[a-zA-Z]*)-[0-9]')
     for wheel_path in depdir.glob("*.whl"):
         wheel_file = wheel_path.name

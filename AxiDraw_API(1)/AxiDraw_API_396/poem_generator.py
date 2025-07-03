@@ -1,7 +1,7 @@
 # poem_generator.py
 
 import google.generativeai as genai
-from googletrans import Translator
+from deep_translator import GoogleTranslator
 from dotenv import load_dotenv
 import os
 
@@ -10,11 +10,11 @@ GEMINI_API_KEY = os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=GEMINI_API_KEY)
 
 model = genai.GenerativeModel("gemini-1.5-flash")
-translator = Translator()
+translator = GoogleTranslator()
 
 
 def to_marathi(text):
-    return translator.translate(text, src='en', dest='mr').text
+    return GoogleTranslator(source='auto', target='mr').translate(text)
 
 
 def generate_poem(name, subject, language="mr"):
